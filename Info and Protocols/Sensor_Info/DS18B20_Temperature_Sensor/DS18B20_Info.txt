@@ -1,0 +1,21 @@
+Overview
+--------
+The DS18B20 is a temperature sensor. Our units have a waterproof probe casing.
+
+Interface
+---------
+The DS18B20 uses an unusual communication protocol called OneWire. Data for any number of OneWire devices may be sent over the same date wire and can be read by any digital pin of your choosing.  Due to the uniqueness of this configuration a more in depth setup guide is included with this sensor. Refer to DS18B20_Wiring.png
+
+The Pull up Resistor
+--------------------
+After viewing the wiring diagram for this sensor you may notice that the data wire is connected to a resistor which is connected to Vcc. This is known as a pull up resistor. This ensures that when no data is being sent the line stays at Vcc and does not "float". A floating line will fluctuate randomly in voltage causing garbage data to be received. If the resistor were connected to ground it would be called a pull down resistor. Most integrated circuits contain internal pull-up and pull-down resistors which is why you do not need to use them for the other sensors.
+
+For this sensor we will use a 4.7k pull-up resistor.
+
+Library
+-------
+You will need:
+-OneWire by Jim Studt et al.
+-DallasTemperature by Miles Burton
+
+If prompted to download any other dependencies do so.

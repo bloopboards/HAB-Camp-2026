@@ -1,0 +1,15 @@
+Overview
+--------
+The ISL29125 is a light sensor which can measure the intensity of light in 3 different wavelength bands, red (620-750 nm) , green (500-570 nm), and blue (380-500 nm).
+
+Interface
+---------
+The ISL29125 communicates over I2C. The board operates at 3.3 Volts which means a logic level converter will be necessary to regulate communications between the microcontroller and sensor.
+
+******WARNING********
+Failure to use a logic level converter will damage the board
+*********************
+
+Library
+-------
+Use the ISL29125 Breakout Library by SparkFun.

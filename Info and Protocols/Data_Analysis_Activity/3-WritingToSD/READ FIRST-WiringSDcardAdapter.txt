@@ -1,0 +1,43 @@
+The SD card adapter module communicates over the SPI protocol. SPI is difficult because there are so many different naming conventions for the pins. Here is an equivalency guide for the 4 pins required in SPI protocol*:
+
+Data pins:
+MISO = CIPO = POCI
+MOSI = COPI = PICO
+
+Chip Select Pin:
+SS   = CS   = CS
+
+Clock Pin:
+SCK = SCK = SCK
+
+The first is the original standard. The second is used on Arduino docs after 2020. The third is used by sparkfun. (Among other places)
+
+For the clock pin all of these are possible, but SCK seems to be the most common by far.
+ 
+SCK = SCLK = CLK = SCL
+
+Once you figure out which pin is what, wiring is simple. Just connect pins that are the same except for the CS/SS pin which is connected to an output pin of your choosing.
+
+
+Vcc  >> 5v
+Gnd  >> Gnd
+
+CIPO >> CIPO
+COPI >> COPI
+SCK  >> SCK
+CS   >> [selected pin]
+
+To change the CS pin in the example code change the value of the CS_PIN variable.
+
+But how do you find these pins on your board? They are usually not labeled, so you will need to consult your pinout diagram. The RedBoard has the exact same pins as the Arduino UNO.
+
+In order to use your SD card adapter you must install the SD library in your IDE.
+
+
+*Three pin variants do exist.
+
+
+
+
+
+
