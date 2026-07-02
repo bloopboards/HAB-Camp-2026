@@ -1,0 +1,1 @@
+Unplug your board and remove the sd card by pushing it down. Insert the sd card into the slot on your laptop. 
