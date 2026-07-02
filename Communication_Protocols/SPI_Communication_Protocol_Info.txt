@@ -1,0 +1,17 @@
+SPI (Serial Peripheral Interface) is a communication protocol used facilitate communication between a control device such as a computer or microcontroller and a peripheral such an external memory system, input device, or display. SPI can be used at different voltages, however the only device we will be using that communicates over SPI is our SD card reader, which operates at 5 Volts, so no logic level conversion will be necessary.
+
+When wiring an SPI device use the following connections
+
+Perifpheral >> Arduino
+
+CS	  >> [Variable]
+SCK       >> SCK
+MOSI/PICO >> MOSI/PICO
+MISO/POCI >> MISO/POCI
+Vcc 	  >> Vcc (5 Volts in our case)
+GND       >> GND
+
+For the SD card reader the CS pin is set to 4 by default in the example code.
+
+
+

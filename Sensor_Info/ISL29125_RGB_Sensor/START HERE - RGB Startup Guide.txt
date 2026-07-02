@@ -1,0 +1,38 @@
+ISL29125 RGB Light Sensor Startup Guide
+
+Research is a core skill in engineering.
+
+Start by Googling the sensor's name. Use a guide that is most easiest to you.
+Documentation/Guides from the manufacture's website are usually the most complete.
+
+Requirements:
+1 Arduino
+1 Breadboard w/ Cables
+1 Bi-Directional Logic Level Converter (LL converter)
+1 ISL29125 RGB Light Sensor
+
+INITIAL SETUP
+
+Hardware Hookup:
+
+******************************************************************************************************************************************
+******************************************************************************************************************************************
+THIS PART REQUIRES THE USE OF A LOGIC LEVEL CONVERTER.
+CONFIRM WITH ADVISORS BEFORE APPLYING POWER TO THE CIRCUIT!
+******************************************************************************************************************************************
+******************************************************************************************************************************************
+
+Install Libraries:
+
+1) Open Arduino IDE
+
+2) Top Left toolbar, go to Tools -> Manage Libraries... 
+	Wait for indexing.
+
+3) Type into the top right search bar, "ISL29125"
+
+4) Find "SparkFun ISL29125 Breakout"
+
+5) Click "Install". A window asking to download dependencies may pop up. If so, click "Install all".
+
+6) The library should show "Installed" in the library manager.
