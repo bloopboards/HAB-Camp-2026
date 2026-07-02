@@ -1,4 +1,13 @@
 /*!
+Make sure to download the library and use it in your Arduino IDE: https://github.com/cdjq/DFRobot_Geiger/tree/main .
+Note: if can, someone add as dependency as a formality, we did keep author's crediting (though, it's a 5yo repo with broken link).
+
+Click on " <> Code"
+"Download ZIP"
+Select that ZIP when uploading in Sketch > Include Library > Add .ZIP Library
+*/
+
+/*!
   @file geiger.ino
   @brief    Detect CPM radiation intensity, the readings may have a large deviation at first, and the data tends to be stable after 3 times
   @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
