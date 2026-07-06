@@ -33,7 +33,7 @@
 #define chipSelect 10 
 #define POCI 11
 #define PICO 12
-#define SSN 13
+#define CLK 13
 
 //Options
 #define CC 200 // Cycle Count
