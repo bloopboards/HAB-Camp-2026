@@ -1,3 +1,9 @@
+/*
+Libraries: 
+Adafruit BMP3XX Library - install all
+SD by Arduino, SparkFun
+*/
+
 /***************************************************************************
   This is a library for the BMP3XX temperature & pressure sensor
 
