@@ -53,6 +53,13 @@ void setup()
   Serial.println("initialization done.");
   //Start counting, enable external interrupt
   geiger.start();
+
+  // Makes the csv file, puts headers
+  // prints twice? probably fine -sam
+  myFile = SD.open("data.csv", FILE_WRITE);
+  myFile.println("CPM, nSv/h, uSv/h");
+  myFile.close();
+  
 }
 
 void loop() {
@@ -60,21 +67,23 @@ void loop() {
   //geiger.start();
   delay(3000);
 
-  myFile = SD.open("data.txt", FILE_WRITE);
+  myFile = SD.open("data.csv", FILE_WRITE);
 
   if (myFile) {
-    Serial.print("Writing to data.txt...");
-    myFile.println("CPM = ");
+    Serial.println("Writing to data.csv...");
+    Serial.println("CPM, nSv/h, uSv/h");
+    Serial.print(geiger.getCPM());
+    Serial.print(", ");
+    Serial.print(geiger.getnSvh());
+    Serial.print(", ");
+    Serial.print(geiger.getuSvh());
+
+    myFile.println();
     myFile.print(geiger.getCPM());
-    myFile.println(" CPM");
-
-    myFile.println();
-
-    myFile.println("nSv/h = ");
+    myFile.print(", ");
     myFile.print(geiger.getnSvh());
-    myFile.println(" nSv/h");
-
-    myFile.println();
+    myFile.print(", ");
+    myFile.print(geiger.getuSvh());
   //Pause the count, turn off the external interrupt trigger, the CPM and radiation intensity values remain in the state before the pause
   //geiger.pause();
   //Get the current CPM, if it has been paused, the CPM is the last value before the pause
