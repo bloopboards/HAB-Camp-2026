@@ -1,0 +1,18 @@
+WIRING GUIDE
+
+Sensor -> Board
+---------------
+CJMCU
+VCC -> 3.3V
+GND -> GND
+SIG -> A0
+
+SD CARD
+CS -> 10
+D1 -> 11
+D0 -> 12
+CLK -> 13
+GND -> GND
+5V -> 5V
+
+Note: Unlike AS7331 sensor, this sensor only detects UV in UVA and UVB ranges.
