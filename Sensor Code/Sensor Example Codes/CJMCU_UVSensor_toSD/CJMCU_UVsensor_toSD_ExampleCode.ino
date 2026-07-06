@@ -1,3 +1,5 @@
+//Example code prints time elapsed and sensor readings, and writes them to a csv file in an SD card.
+
 #include <SPI.h>
 #include <SD.h>
 
