@@ -21,10 +21,10 @@
 #include <Adafruit_Sensor.h>
 #include "Adafruit_BMP3XX.h"
 
-#define BMP_SCK 13
-#define BMP_MISO 12
-#define BMP_MOSI 11
-#define BMP_CS 10
+#define BMP_SCK 13;
+#define BMP_MISO 12;
+#define BMP_MOSI 11;
+#define BMP_CS 4;
 
 const int chipSelect = 4;
 
@@ -32,6 +32,7 @@ const int chipSelect = 4;
 
 Adafruit_BMP3XX bmp;
 
+int CS_PIN = 4;
 File myFile;
 
 void setup() {
@@ -39,7 +40,7 @@ void setup() {
   while (!Serial);
   Serial.print("Initializing SD card...");
   pinMode(10, OUTPUT)
-   if (!SD.begin(chipSelect)) {
+   if (!SD.begin(CS_PIN)) {
     Serial.println("Card failed, or not present");
     // don't do anything more:
     while (1);
@@ -64,7 +65,7 @@ void setup() {
 
 void loop() {
 
-  myFile = SD.open("BMP390_data.txt", FILE_WRITE);
+  myFile = SD.open("data.txt", FILE_WRITE);
   if (! bmp.performReading()) {
     Serial.println("Failed to perform reading :(");
     return;
@@ -96,6 +97,7 @@ void loop() {
   myFile.print("Approx. Altitude = ");
   myFile.print(bmp.readAltitude(SEALEVELPRESSURE_HPA));
   myFile.println(" m");
+  myFile.println();
   myFile.println();
 
 
