@@ -7,7 +7,7 @@ VCC -> 3.3V
 GND -> GND
 SIG -> A0
 
-SD CARD
+SD CARD READER
 CS -> 10
 D1 -> 11
 D0 -> 12
