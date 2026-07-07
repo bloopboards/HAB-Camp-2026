@@ -1,0 +1,86 @@
+ #include <SD.h>
+ #include <SPI.h>
+ #include <Arduino.h>
+ #include <SparkFun_AS7331.h>
+ #include <Wire.h>
+
+ SfeAS7331ArdI2C myUVSensor;
+ File myFile;
+
+ void setup()
+ {
+     Serial.begin(115200);
+     while (!Serial)
+     {
+         delay(100);
+     };
+     Serial.println("AS7331 UV A/B/C Command (One-shot) mode Example.");
+
+     Wire.begin();
+
+     // Initialize sensor and run default setup.
+     if (myUVSensor.begin() == false)
+     {
+         Serial.println("Sensor failed to begin. Please check your wiring!");
+         Serial.println("Halting...");
+         while (1)
+             ;
+     }
+
+     Serial.println("Sensor began.");
+
+     // Set measurement mode and change device operating mode to measure.
+     if (myUVSensor.prepareMeasurement(MEAS_MODE_CMD) == false)
+     {
+         Serial.println("Sensor did not get set properly.");
+         Serial.println("Halting...");
+         while (1)
+             ;
+     }
+
+     Serial.println("Set mode to command.");
+
+     Serial.print("Initializing SD card...");
+
+     if (!SD.begin(10)) {
+        Serial.println("initialization failed!");
+        while(1);
+     }
+     Serial.println("initialization done.");
+     myFile = SD.open("data.csv", FILE_WRITE);
+     myFile.println("UVA, UVB, UVC");
+     myFile.close();
+ }
+
+ void loop()
+ {
+
+    myFile = SD.open("data.csv", FILE_WRITE);
+
+     // Send a start measurement command.
+     if (ksfTkErrOk != myUVSensor.setStartState(true))
+         Serial.println("Error starting reading!");
+
+     // Wait for a bit longer than the conversion time.
+     delay(2 + myUVSensor.getConversionTimeMillis());
+
+     // Read UV values.
+     if (ksfTkErrOk != myUVSensor.readAllUV())
+         Serial.println("Error reading UV.");
+
+     Serial.print(myUVSensor.getUVA());
+     Serial.print(",");
+     Serial.print(myUVSensor.getUVB());
+     Serial.print(",");
+     Serial.println(myUVSensor.getUVC());
+     Serial.println();
+
+     myFile.print(myUVSensor.getUVA());
+     myFile.print(",");
+     myFile.print(myUVSensor.getUVB());
+     myFile.print(",");
+     myFile.println(myUVSensor.getUVC());
+
+     myFile.close();
+     delay(2000);
+ }
