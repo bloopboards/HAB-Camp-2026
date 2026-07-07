@@ -20,7 +20,7 @@ void setup()
   }
 Serial.println("initialization done.");
 
-Serial.println("time elapsed, sensor reading, sensor voltage");
+Serial.println("Time (s),Sensor reading,UV Voltage (V)");
 Serial.println("");
 
 myFile = SD.open("data.csv", FILE_WRITE);
