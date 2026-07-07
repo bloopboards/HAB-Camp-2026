@@ -1,0 +1,11 @@
+WIRING GUIDE
+
+Sensor -> Board
+---------------
+GND -> GND
+3V3 -> 3.3V
+SDA -> SDA
+SCL -> SCL
+
+Note: Sensor detects UV in three different wavelength ranges and lists them seperately as UVA, UVB, and UVC. 
+You might not see any data until you take the sensor somewhere outside.
