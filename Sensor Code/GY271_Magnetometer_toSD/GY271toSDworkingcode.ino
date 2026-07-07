@@ -47,8 +47,7 @@ float magnitude = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
   Serial.print(",");
   Serial.print(heading);
   Serial.print(",");
-  Serial.print(magnitude/120); 
-  Serial.println(",");
+  Serial.println(magnitude/120); 
   Serial.println();
 
   myFile.print(x/120); 
@@ -59,8 +58,7 @@ float magnitude = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
   myFile.print(",");
   myFile.print(heading);
   myFile.print(",");
-  myFile.print(magnitude/120); 
-  myFile.println(",");
+  myFile.println(magnitude/120); 
 
   myFile.close();
   delay(1000);
