@@ -1,0 +1,54 @@
+int ledPin = 13;     // LED connected to pin 13
+int sensorPin = 2;   // PIR sensor signal connected to pin 2
+int sensorState = LOW; // to track last state
+unsigned long previousMillis = 0;
+unsigned long seconds = 0;
+#include <SPI.h)
+#include <SD.h>
+
+File MyFile;
+
+const int chipSelect = 10;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  pinMode(sensorPin, INPUT);
+  Serial.begin(9600);
+
+  while (!Serial) {
+    ;
+  }
+
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin()) {
+    Serial.println("Initialization failed!");
+    return;
+  }
+  Serial.println("Initialization done")
+}
+
+void loop() {
+  int sensorValue = digitalRead(sensorPin);
+
+  if (sensorValue == HIGH) {
+    digitalWrite(ledPin, HIGH);
+    delay(100);
+    if (sensorState == LOW) {
+      Serial.println("Motion detected!");
+      sensorState = HIGH;
+    }
+  } else {
+    digitalWrite(ledPin, LOW);
+    delay(200);
+    if (sensorState == HIGH) {
+      Serial.println("Motion stopped!");
+      sensorState = LOW;
+    }
+  }
+  if (millis() - previousMillis >= 1000) {
+    previousMillis = millis();
+    seconds++;
+    Serial.println(seconds);
+  }
+}
