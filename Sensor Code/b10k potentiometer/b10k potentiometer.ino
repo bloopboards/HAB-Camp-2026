@@ -25,7 +25,7 @@ void setup() {
   Serial.println("initialization done.");
 
   myFile = SD.open("data.csv", FILE_WRITE);
-  myFile.println("(Brightness, Voltage)");
+  myFile.println("(Voltage, Brightness)");
   // add ", data2, data3" into it for other data, should print: '(Brightness, data2, data3)'
   myFile.close();
 }
