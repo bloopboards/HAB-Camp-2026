@@ -5,6 +5,8 @@ Note: if can, someone add as dependency as a formality, we did keep author's cre
 Click on " <> Code"
 "Download ZIP"
 Select that ZIP when uploading in Sketch > Include Library > Add .ZIP Library
+
+Sample Code: https://wiki.dfrobot.com/sen0463/docs/19005
 */
 
 /*!
