@@ -1,3 +1,6 @@
+// hardware might be broken
+// thread/conversations below the guide used, did not yield successful fixes
+
 #include <Wire.h>
 
 const int MPU = 0x68;
