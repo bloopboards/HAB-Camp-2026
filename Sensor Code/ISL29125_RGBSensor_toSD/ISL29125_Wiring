@@ -1,0 +1,19 @@
+WIRING GUIDE
+
+Sensor -> Board
+---------------
+ISL29125
+GND -> GND
+3.3V -> 3.3V
+SDA -> A4
+SCL -> A5
+
+SD CARD READER
+CS -> 10
+D1 -> 11
+D0 -> 12
+CLK -> 13
+GND -> GND
+5V -> 5V
+
+Note: ISL29125 sensor maxes out when taken into direct sunlight.
