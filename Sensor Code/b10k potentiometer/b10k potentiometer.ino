@@ -25,7 +25,7 @@ void setup() {
   Serial.println("initialization done.");
 
   myFile = SD.open("data.csv", FILE_WRITE);
-  myFile.println("(Brightness)");
+  myFile.println("(Brightness, Voltage)");
   // add ", data2, data3" into it for other data, should print: '(Brightness, data2, data3)'
   myFile.close();
 }
@@ -41,12 +41,16 @@ void loop() {
   analogWrite(LED_PIN, brightness);
 
   // Optional: print the value to Serial Monitor
+  Serial.print("Analog: ");
+  Serial.print(analogValue);
   Serial.print("Brightness: ");
   Serial.println(brightness);
 
   myFile = SD.open("data.csv", FILE_WRITE);
 
   if (myFile) {
+    myFile.print(analogValue);
+    myFile.print(",");
     myFile.print(brightness);
     // myFile.print(", ");
     // ^ add back when more data (data2, data3)
@@ -59,4 +63,5 @@ void loop() {
     Serial.println("error opening test.csv");
   }
 
+  delay(500);
 }
