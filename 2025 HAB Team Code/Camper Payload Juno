@@ -1,0 +1,106 @@
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_BMP3XX.h"
+
+#define SEALEVELPRESSURE_HPA (1013.25)
+#define BUZZER_PIN 9
+#define SD_CS_PIN 4 // You can change this to 53 on a Mega if preferred
+
+Adafruit_BMP3XX bmp;
+
+// Timing & State Variables
+unsigned long lastSensorRead = 0;
+const long sensorInterval = 2000;
+unsigned long lastBuzzerUpdate = 0;
+const long buzzerStepDelay = 40;
+unsigned long sweepStartTime = 0;
+const long sweepRestPeriod = 150000;
+int currentFreq = 20;
+bool isSweeping = true;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  // CRITICAL FOR MEGA: Even if not using pin 53 for CS, it must be an output
+  pinMode(53, OUTPUT); 
+
+  // 1. Initialize BMP390 via I2C
+  if (!bmp.begin_I2C()) {   
+    Serial.println("BMP390 Fail");
+    while (1);
+  }
+
+  // 2. Initialize SD Card via SPI
+  if (!SD.begin(SD_CS_PIN)) {
+    Serial.println("SD initialization failed! Check wiring to Pins 50-52.");
+  } else {
+    Serial.println("SD initialized.");
+    File dataFile = SD.open("data.csv", FILE_WRITE);
+    if (dataFile) {
+      // Header remains the same as your setup
+      dataFile.println("Millis,Temp_C,Pres_hPa,Alt_m");
+      dataFile.close();
+    }
+  }
+
+  // BMP390 Settings
+  bmp.setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
+  bmp.setPressureOversampling(BMP3_OVERSAMPLING_4X);
+  bmp.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
+  bmp.setOutputDataRate(BMP3_ODR_50_HZ);
+  
+  sweepStartTime = millis();
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+
+  // Task 1: Non-blocking Sensor Reading & Logging
+  if (currentMillis - lastSensorRead >= sensorInterval) {
+    lastSensorRead = currentMillis;
+    readAndLog();
+  }
+
+  // Task 2: Non-blocking Buzzer Sweep
+  if (isSweeping) {
+    if (currentMillis - lastBuzzerUpdate >= buzzerStepDelay) {
+      lastBuzzerUpdate = currentMillis;
+      tone(BUZZER_PIN, currentFreq);
+      currentFreq += 10;
+      if (currentFreq > 2000) {
+        noTone(BUZZER_PIN);
+        isSweeping = false;
+        sweepStartTime = currentMillis;
+        currentFreq = 20;
+      }
+    }
+  } else if (currentMillis - sweepStartTime >= sweepRestPeriod) {
+    isSweeping = true;
+  }
+}
+
+void readAndLog() {
+  if (!bmp.performReading()) return;
+
+  float t = bmp.temperature;
+  float p = bmp.pressure / 100.0;
+  float a = bmp.readAltitude(SEALEVELPRESSURE_HPA);
+
+  // Updated Serial for monitoring (Now includes altitude)
+  Serial.print("Temp: "); Serial.print(t); Serial.print(" C, "); 
+  Serial.print("Pres: "); Serial.print(p); Serial.print(" hPa, ");
+  Serial.print("Alt: "); Serial.print(a); Serial.println(" m");
+
+  // Write to SD
+  File dataFile = SD.open("data.csv", FILE_WRITE);
+  if (dataFile) {
+    dataFile.print(millis()); dataFile.print(",");
+    dataFile.print(t); dataFile.print(",");
+    dataFile.print(p); dataFile.print(",");
+    dataFile.println(a); // Correctly writes altitude to the 4th column
+    dataFile.close();
+  }
+}
