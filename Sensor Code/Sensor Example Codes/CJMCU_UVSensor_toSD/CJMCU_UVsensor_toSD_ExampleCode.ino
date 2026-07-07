@@ -22,6 +22,8 @@ Serial.println("initialization done.");
 
 Serial.println("time elapsed, sensor reading, sensor voltage");
 Serial.println("");
+
+myFile = SD.open("data.csv", FILE_WRITE);
 }
  
 void loop() 
@@ -30,22 +32,22 @@ void loop()
   float sensorValue;
 
   myFile = SD.open("data.csv", FILE_WRITE); 
+  myFile.println("Time (s),Sensor reading,UV Voltage (V)");
+  myFile.close();
  
   sensorValue = analogRead(A0);
   sensorVoltage = sensorValue/1024*3.3;
   Serial.print(millis()/1000);
-  Serial.print("s,");
+  Serial.print(",");
   Serial.print(sensorValue);
   Serial.print(",");
-  Serial.print(sensorVoltage);
-  Serial.println(" V");
+  Serial.println(sensorVoltage);
 
   myFile.print(millis()/1000);
-  myFile.print("s,");
+  myFile.print(",");
   myFile.print(sensorValue);
   myFile.print(",");
-  myFile.print(sensorVoltage);
-  myFile.println(" V");
+  myFile.println(sensorVoltage);
 
   Serial.println();
   myFile.close() ;
