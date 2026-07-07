@@ -49,7 +49,7 @@ float gain;
 //Function Prototypes
 uint8_t readRegister(uint8_t regAddress);
 void changeCycleCount(uint8_t newCC);
-void writeReg(uint8_t regAddress, uint8_t data);
+void writeRegister(uint8_t regAddress, uint8_t data);
 
 //set up functions
 uint8_t readRegister(uint8_t regAddress){
@@ -61,10 +61,10 @@ uint8_t readRegister(uint8_t regAddress){
   digitalWrite(chipSelect, HIGH);
   return data;
 }
-void writeReg(uint8_t regAddress, uint8_t data){
+void writeRegister(uint8_t regAddress, uint8_t data){
   digitalWrite(chipSelect, LOW);
   delay(100);
-  SPI.transfer(addr & 0x7f);
+  SPI.transfer(regAddress & 0x7f);
   SPI.transfer(data);
   digitalWrite(chipSelect, HIGH);
 }
@@ -72,16 +72,16 @@ void changeCycleCount(uint8_t newCC){
   uint8_t CCMSB = (newCC & 0xFF00) >> 8; //get the most significant byte
   uint8_t CCLSB = newCC & 0xFF; //get the least significant byte
     
-  digitalWrite(PIN_CS, LOW); 
+  digitalWrite(chipSelect, LOW); 
   delay(100);
-  SPI.transfer(RM3100_CCX1_REG & 0x7F); //AND with 0x7F to make first bit(read/write bit) low for write
+  SPI.transfer(RM3100_CCX2 & 0x7F); //AND with 0x7F to make first bit(read/write bit) low for write
   SPI.transfer(CCMSB);  //write new cycle count to ccx1
   SPI.transfer(CCLSB);  //write new cycle count to ccx0
   SPI.transfer(CCMSB);  //write new cycle count to ccy1
   SPI.transfer(CCLSB);  //write new cycle count to ccy0
   SPI.transfer(CCMSB);  //write new cycle count to ccz1
   SPI.transfer(CCLSB);  //write new cycle count to ccz0
-  digitalWrite(PIN_CS, HIGH);
+  digitalWrite(chipSelect, HIGH);
 }
 //Runs at start
 void setup() {
@@ -101,7 +101,7 @@ void setup() {
   changeCycleCount(CC);
 
   cycleCount = readRegister(RM3100_CCX2);
-  cycleCount = (cycleCount << 8) | readReg(RM3100_CCX1);
+  cycleCount = (cycleCount << 8) | readRegister(RM3100_CCX1);
 
   Serial.print("Cycle Counts = ");
   Serial.println(cycleCount);
@@ -111,7 +111,7 @@ void setup() {
   Serial.print("Gain = "); //display gain; default gain should be around 75 for the default cycle count of 200
   Serial.println(gain);
 
-  writeReg(RM3100_CMM_REG, 0x79);
+  writeRegister(RM3100_CMM, 0x79);
 }
 
 //Main loop
@@ -121,9 +121,9 @@ void loop() {
   long z = 0;
   uint8_t x2,x1,x0,y2,y1,y0,z2,z1,z0;
 
-  while((readReg(RM3100_STATUS_REG) & 0x80) != 0x80);
+  while((readRegister(RM3100_STATUS) & 0x80) != 0x80);
 
-  digitalWrite(PIN_CS, LOW);
+  digitalWrite(chipSelect, LOW);
   delay(100);
   SPI.transfer(0xA4);
   x2 = SPI.transfer(0xA5);
@@ -138,7 +138,7 @@ void loop() {
   z1 = SPI.transfer(0xAC);
   z0 = SPI.transfer(0);
   
-  digitalWrite(PIN_CS, HIGH);  
+  digitalWrite(chipSelect, HIGH);  
 
   if (x2 & 0x80){
       x = 0xFF;
