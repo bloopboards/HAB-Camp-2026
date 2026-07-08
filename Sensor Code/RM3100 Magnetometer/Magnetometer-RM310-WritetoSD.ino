@@ -28,7 +28,7 @@
 #define singleMode 0 //0 = use continuous measurement mode; 1 = use single measurement mode
 #define useDRDYPin 0 //0 = not using DRDYPin ; 1 = using DRDYPin to wait for data
 #define usingLED 1 //0 = not usng warning LED ; 1= using warning LED
-#define measurementGap 10 //How long to wait between measurements, in seconds
+#define measurementGap 5 //How long to wait between measurements, in seconds
 
 uint8_t revid;
 uint16_t cycleCount;
@@ -162,7 +162,6 @@ void loop() {
         if(i == (columns - 1)){
           Serial.println(header[i]);
           sensorData.println(header[i]); 
-          sensorData.close();
           titles = false;
         }
         else{
@@ -176,11 +175,12 @@ void loop() {
         if(i == (columns - 1)){
           Serial.println(results[i]);
           sensorData.println(results[i]); 
-          sensorData.close();
         }
         else{
           Serial.print(results[i]);
           sensorData.print(results[i]);
+          Serial.print(" ");
+          sensorData.print(",");
            
         }
       }
@@ -203,6 +203,7 @@ void loop() {
       sensorData.close();
     }
   }
+  sensorData.close();
   delay(measurementGap * 1000);
   incrementTime(measurementGap * 1000);
 }
