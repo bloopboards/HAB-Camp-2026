@@ -3,10 +3,10 @@ int sensorPin = 2;   // PIR sensor signal connected to pin 2
 int sensorState = LOW; // to track last state
 unsigned long previousMillis = 0;
 unsigned long seconds = 0;
-#include <SPI.h)
+#include <SPI.h>
 #include <SD.h>
 
-File MyFile;
+File myFile;
 
 const int chipSelect = 10;
 
@@ -25,7 +25,11 @@ void setup() {
     Serial.println("Initialization failed!");
     return;
   }
-  Serial.println("Initialization done")
+  Serial.println("Initialization done");
+
+  myFile = SD.open("data.csv", FILE_WRITE);
+  myFile.println("(Time(s), Motion)");
+  myFile.close();
 }
 
 void loop() {
@@ -50,5 +54,15 @@ void loop() {
     previousMillis = millis();
     seconds++;
     Serial.println(seconds);
+  }
+  
+   if (myFile) {
+     myFile.print(sensorState);
+      myFile.print(",");
+      myFile.print(seconds);
+      myFile.close();
+      Serial.println("done.");
+  } else {
+    Serial.println("error opening test.csv");
   }
 }
