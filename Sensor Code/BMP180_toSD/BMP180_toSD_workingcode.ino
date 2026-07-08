@@ -43,7 +43,6 @@ void loop() {
     myFile.print(bmp.readPressure());
     myFile.print(","); 
     myFile.println(bmp.readAltitude());
-    myFile.println();
 
     myFile.close();
 
