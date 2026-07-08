@@ -1,0 +1,20 @@
+WIRING GUIDE
+
+Sensor -> Board
+---------------
+
+TMAG5273
+GND -> GND
+3V3 -> 3.3V
+SDA -> SDA
+SCL -> SCL
+
+SD Card Reader
+5V -> 5V
+GND -> GND
+CLK -> 13
+D0 -> 12
+D1 -> 11
+CS -> 10
+
+Note: TMAG5273 can also detect temperature, but doesn't seem to be very accurate.
