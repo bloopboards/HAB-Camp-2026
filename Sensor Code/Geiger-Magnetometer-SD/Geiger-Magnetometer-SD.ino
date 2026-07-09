@@ -1,5 +1,5 @@
 
-//this is /Users/hazypaze/Documents/Arduino/Magnetometer-RM310-WritetoSD/Magnetometer-RM310-WritetoSD.inoforked from hnguy169
+//this is forked from hnguy169
 //https://github.com/hnguy169/RM3100-Arduino
 
 //TROUBLESHOOTING --- THIS IS THE MAGNETOMETER OF SORROW AND DESPAIR
