@@ -1,3 +1,4 @@
+
 //this is /Users/hazypaze/Documents/Arduino/Magnetometer-RM310-WritetoSD/Magnetometer-RM310-WritetoSD.inoforked from hnguy169
 //https://github.com/hnguy169/RM3100-Arduino
 
@@ -8,14 +9,14 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
-#include <DFRobotGieger.h>
+#include <DFRobot_Geiger.h>
 
 //pin definitions
 #define PIN_DRDY 1 //Set pin D9 to be the Data Ready Pin
 #define RM_CS 10 //Chip Select (SS) is set to Pin 10
 #define SD_CS 9 //Chip Select is set to pin 9
 #define LED_Pin 8 //SD Failed warning LED is set to pin 8
-#define Gei_Pen 7 //This is the pin that the geiger counter is connected to
+#define Gei_Pin 7 //This is the pin that the geiger counter is connected to
 
 //internal register values without the R/W bit
 #define RM3100_REVID_REG 0x36 // Hexadecimal address for the Revid internal register
@@ -115,9 +116,9 @@ void loop() {
   
   digitalWrite(RM_CS, HIGH);
 
-  double nSvh = (geiger.getnSvh())*(double);
-  double uSvh = (geiger.getuSvh())*(double);
-  double CPM = (geiger.getCPM())*(double);
+  double nSvh = ((double)(geiger.getnSvh()));
+  double uSvh = ((double)(geiger.getuSvh()));
+  double CPM = ((double)(geiger.getCPM()));
 
   //special bit manipulation since there is not a 24 bit signed int data type
   if (x2 & 0x80){
@@ -158,9 +159,9 @@ void loop() {
   Serial.print("   X:");
   Serial.print(xF);
   Serial.print("   Y:");
-  Serial.print(xY);
+  Serial.print(yF);
   Serial.print("   Z:");
-  Serial.print(xZ);
+  Serial.print(zF);
  
 
   //Magnitude should be around 45 uT (+/- 15 uT)
@@ -168,9 +169,13 @@ void loop() {
   Serial.println(uT);
   Serial.println();
 
-  serial.print("Geiger Counter Data")
+  Serial.println("Geiger Counter Data");
   Serial.print("   nSvh:");
-  Serial.print()
+  Serial.print(nSvh);
+  Serial.print("   uSvh:");
+  Serial.print("   CPM:");
+  Serial.print(CPM);
+  Serial.println();
   double results[] = {timeS, xF, yF, zF, uT, nSvh, uSvh, CPM};
 
   File sensorData = SD.open("rmdata.csv", FILE_WRITE);
