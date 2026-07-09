@@ -7,11 +7,3 @@ VIN -> 5V
 GND -> GND
 SCL -> SCL
 SDA -> SDA
-
-SD CARD READER
-CS -> 10
-D1 -> 11
-D0 -> 12
-CLK -> 13
-GND -> GND
-5V -> 5V
