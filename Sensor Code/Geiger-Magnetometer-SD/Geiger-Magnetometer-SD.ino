@@ -39,6 +39,7 @@ double timeS = 0.0;
 int columns = 8; //Number of Columns of Data, if you add more headers you MUST increase this value
 const char* header[] = {"Time Elapsed (s),"," X component (uT),"," Y component (uT),"," Z component (uT),", " Magnitude(uT),"," nSvh,"," uSvh,"," CPM" };
 bool titles = true;
+DFRobot_Geiger  geiger(Gei_Pin);
 
 void setup() {
   pinMode(PIN_DRDY, INPUT);  
