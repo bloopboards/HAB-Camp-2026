@@ -16,7 +16,12 @@
 #define RM_CS 10 //Chip Select (SS) is set to Pin 10
 #define SD_CS 9 //Chip Select is set to pin 9
 #define LED_Pin 8 //SD Failed warning LED is set to pin 8
-#define Gei_Pin 7 //This is the pin that the geiger counter is connected to
+
+#if defined ESP32
+#define Gei_Pin D3
+#else
+#define Gei_Pin 3 //This is the pin that the geiger counter is connected to
+#endif
 
 //internal register values without the R/W bit
 #define RM3100_REVID_REG 0x36 // Hexadecimal address for the Revid internal register
@@ -116,9 +121,9 @@ void loop() {
   
   digitalWrite(RM_CS, HIGH);
 
-  double nSvh = ((double)(geiger.getnSvh()));
-  double uSvh = ((double)(geiger.getuSvh()));
-  double CPM = ((double)(geiger.getCPM()));
+  double nSvh = geiger.getnSvh();
+  double uSvh = geiger.getuSvh();
+  double CPM = geiger.getCPM();
 
   //special bit manipulation since there is not a 24 bit signed int data type
   if (x2 & 0x80){
@@ -161,7 +166,7 @@ void loop() {
   Serial.print("   Y:");
   Serial.print(yF);
   Serial.print("   Z:");
-  Serial.print(zF);
+  Serial.println(zF);
  
 
   //Magnitude should be around 45 uT (+/- 15 uT)
@@ -173,8 +178,9 @@ void loop() {
   Serial.print("   nSvh:");
   Serial.print(nSvh);
   Serial.print("   uSvh:");
+  Serial.print(uSvh);
   Serial.print("   CPM:");
-  Serial.print(CPM);
+  Serial.println(CPM);
   Serial.println();
   double results[] = {timeS, xF, yF, zF, uT, nSvh, uSvh, CPM};
 
@@ -183,13 +189,11 @@ void loop() {
     if(titles){
       for(int i = 0; i < columns; i++){
         if(i == (columns - 1)){
-          Serial.println(header[i]);
           sensorData.println(header[i]); 
           sensorData.close();
           titles = false;
         }
         else{
-          Serial.print(header[i]);
           sensorData.print(header[i]); 
         }
       }
@@ -197,12 +201,10 @@ void loop() {
     else{
       for(int i = 0; i < columns; i++){
         if(i == (columns - 1)){
-          Serial.println(results[i]);
           sensorData.println(results[i]); 
           sensorData.close();
         }
         else{
-          Serial.print(results[i]);
           sensorData.print(results[i]);
            
         }
