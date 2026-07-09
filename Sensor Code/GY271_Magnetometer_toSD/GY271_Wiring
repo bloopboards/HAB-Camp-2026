@@ -7,11 +7,3 @@ SDA -> A4
 SCL -> A5
 GND -> GND
 VCC -> 3.3V or 5V
-
-SD CARD
-CS -> 10
-D1 -> 11
-D0 -> 12
-CLK -> 13
-GND -> GND
-5V -> 5V
