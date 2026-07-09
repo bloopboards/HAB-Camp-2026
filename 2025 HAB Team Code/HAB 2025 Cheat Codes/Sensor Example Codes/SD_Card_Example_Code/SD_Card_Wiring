@@ -1,0 +1,19 @@
+SD Card Reader Wiring Guide
+
+Sensor -> Board
+
+Arduino Uno
+CS -> 10 (or any number, you just have to change the number in the code)
+D1 -> 11
+D0 -> 12
+CLK -> 13
+GND -> GND
+5V -> 5V (or 3V -> 3.3V)
+
+Arduino Mega
+CS -> 10 (or any number, you just have to change the number in the code)
+D1 -> 51
+D0 -> 50
+CLK -> 52
+GND -> GND
+5V -> 5V (or 3V -> 3.3V)
