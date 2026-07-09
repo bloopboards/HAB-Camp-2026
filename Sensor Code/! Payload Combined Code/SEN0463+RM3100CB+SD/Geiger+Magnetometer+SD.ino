@@ -18,7 +18,7 @@
 #define LED_Pin 8 //SD Failed warning LED is set to pin 8
 
 #if defined ESP32
-#define Gei_Pin D3
+#define Gei_Pin D3 //Connect the Geiger counter to digital 3!!!
 #else
 #define Gei_Pin 3 //This is the pin that the geiger counter is connected to
 #endif
@@ -38,56 +38,61 @@
 #define usingLED 1 //0 = not usng warning LED ; 1= using warning LED
 #define measurementGap 10 //How long to wait between measurements, in seconds
 
+//Variable Declaration
 uint8_t revid;
 uint16_t cycleCount;
 float gain;
 double timeS = 0.0;
 int columns = 8; //Number of Columns of Data, if you add more headers you MUST increase this value
-const char* header[] = {"Time Elapsed (s),"," X component (uT),"," Y component (uT),"," Z component (uT),", " Magnitude(uT),"," nSvh,"," uSvh,"," CPM" };
-bool titles = true;
-DFRobot_Geiger  geiger(Gei_Pin);
+const char* header[] = {"Time Elapsed (s),"," X component (uT),"," Y component (uT),"," Z component (uT),", " Magnitude(uT),"," nSvh,"," uSvh,"," CPM" }; // Headers for the top of the CSV file
+bool titles = true; //This is for the titles at the top of the CSV file, once they are put into the file this is set to False so that it can continue recording the data without adding more headers
 
+DFRobot_Geiger  geiger(Gei_Pin); //Tells the Library which Pin to use
+
+//Setup code runs once
 void setup() {
+  //Set pin IO
   pinMode(PIN_DRDY, INPUT);  
   pinMode(RM_CS, OUTPUT);
-  digitalWrite(RM_CS, HIGH);
+
+  digitalWrite(RM_CS, HIGH); //Tells the magnetometer to stop sending data
   SPI.begin(); // Initiate the SPI library
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));  
   Serial.begin(9600); //set baud rate to 9600
-  SD.begin(SD_CS);
-  geiger.start();
+  SD.begin(SD_CS); //Initialize the SD card
+  geiger.start(); //Start the geiger counter
   delay(100);
   incrementTime(100);
-  revid = readReg(RM3100_REVID_REG);
   
+  //This is to verify that we are reading data from the magnetometer
+  revid = readReg(RM3100_REVID_REG); 
   Serial.print("REVID ID = 0x"); //REVID ID should be 0x22
   Serial.println(revid, HEX);
-
-  changeCycleCount(initialCC); //change the cycle count; default = 200 (lower cycle count = higher data rates but lower resolution)
-
+  
+  //change the cycle count; default = 200 (lower cycle count = higher data rates but lower resolution)
+  changeCycleCount(initialCC); 
   cycleCount = readReg(RM3100_CCX1_REG);
   cycleCount = (cycleCount << 8) | readReg(RM3100_CCX0_REG);
-
   Serial.print("Cycle Counts = "); //display cycle count
   Serial.println(cycleCount);
 
-  gain = (0.3671 * (float)cycleCount) + 1.5; //linear equation to calculate the gain from cycle count
-
-  Serial.print("Gain = "); //display gain; default gain should be around 75 for the default cycle count of 200
+  //linear equation to calculate the gain from cycle count
+  gain = (0.3671 * (float)cycleCount) + 1.5; 
+  Serial.print("Gain = ");
   Serial.println(gain);
 
   if (singleMode){
     //set up single measurement mode
     writeReg(RM3100_CMM_REG, 0);
     writeReg(RM3100_POLL_REG, 0x70);
-  }
-  else{
-    // Enable transmission to take continuous measurement with Alarm functions off
-    writeReg(RM3100_CMM_REG, 0x79);
-  }
+  } 
+    else{
+      // Enable transmission to take continuous measurement with Alarm functions off
+      writeReg(RM3100_CMM_REG, 0x79);}
   
-}
+  }
 
+//The main loop of our program
 void loop() {
   long x = 0;
   long y = 0;
@@ -96,14 +101,14 @@ void loop() {
 
   //wait until data is ready using 1 of two methods (chosen in options at top of code)
   if(useDRDYPin){ 
-    while(digitalRead(PIN_DRDY) == LOW); //check RDRY pin
+    while(digitalRead(PIN_DRDY) == LOW); //check DRDY pin
   }
   else{
     while((readReg(RM3100_STATUS_REG) & 0x80) != 0x80); //read internal status register
   }
   
   //read measurements
-  digitalWrite(RM_CS, LOW);
+  digitalWrite(RM_CS, LOW); //Tells the magnetometer that it is time to start sending data
   delay(100);
   incrementTime(100);
   SPI.transfer(0xA4);
@@ -119,8 +124,9 @@ void loop() {
   z1 = SPI.transfer(0xAC);
   z0 = SPI.transfer(0);
   
-  digitalWrite(RM_CS, HIGH);
+  digitalWrite(RM_CS, HIGH); //Tells the magnetomer to stop sending data
 
+  //Collects the geiger counter data
   double nSvh = geiger.getnSvh();
   double uSvh = geiger.getuSvh();
   double CPM = geiger.getCPM();
@@ -158,8 +164,6 @@ void loop() {
   Serial.print("   Z:");
   Serial.println(z);
 
-
-
   Serial.print("Data in microTesla(uT):");
   Serial.print("   X:");
   Serial.print(xF);
@@ -184,9 +188,11 @@ void loop() {
   Serial.println();
   double results[] = {timeS, xF, yF, zF, uT, nSvh, uSvh, CPM};
 
-  File sensorData = SD.open("rmdata.csv", FILE_WRITE);
+  File sensorData = SD.open("rmdata.csv", FILE_WRITE); //Opens the SD Card file
   if(sensorData){
+    //If the SD card successfully opens the file this code adds the data to the CSV file
     if(titles){
+      //If the titles have not been written yet then this prints them at the top
       for(int i = 0; i < columns; i++){
         if(i == (columns - 1)){
           sensorData.println(header[i]); 
@@ -194,7 +200,8 @@ void loop() {
           titles = false;
         }
         else{
-          sensorData.print(header[i]); 
+          sensorData.print(header[i]);
+          sensorData.print(",");
         }
       }
     }
@@ -206,12 +213,13 @@ void loop() {
         }
         else{
           sensorData.print(results[i]);
-           
+          sensorData.print(",");           
         }
       }
     }
   }
   else{
+    //If the SD card fails this code blinks an LED and/or types "SD CARD FAILED" in the serial monitor
     if(usingLED == 1){
       Serial.println("SD CARD FAILED");
       for(int i = 0; i < 5; i++){
