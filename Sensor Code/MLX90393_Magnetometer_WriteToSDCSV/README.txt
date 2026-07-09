@@ -10,7 +10,7 @@ https://learn.sparkfun.com/tutorials/qwiic-magnetometer-mlx90393-hookup-guide/al
   https://github.com/sparkfun/Qwiic_Magnetometer_MLX90393
 
 
-
+7/9/2026: uhhh we didn't need the level converter
 
 Wiring Guide
 
