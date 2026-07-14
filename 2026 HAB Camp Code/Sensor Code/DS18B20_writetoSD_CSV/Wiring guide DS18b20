@@ -1,0 +1,7 @@
+======= Wiring Guide =======
+
+DS18B20 |  Arduino
+----------------------
+GND	    |  GND
+DQ	    |  Any digital pin (with 4.7k Ohm pull-up resistor)
+VDD	    |  5V (normal mode)
