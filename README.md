@@ -8,4 +8,3 @@ Old code can be found in the 2025 HAB Folder.
 Collaborators:
 TODO: 
 - Clean up repo for camper access (code for them to build upon)
-- During camp, set up specific payload folders with team names and specific code they end up writing.
