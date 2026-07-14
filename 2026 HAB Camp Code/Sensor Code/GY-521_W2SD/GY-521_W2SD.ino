@@ -10,11 +10,6 @@ int16_t temperature; // variables for temperature data
 
 char tmp_str[7]; // temporary variable used in convert function
 
-char* convert_int16_to_str(int16_t i) { // converts int16 to string. Moreover, resulting strings will have the same length in the debug monitor.
-  sprintf(tmp_str, "%6d", i);
-  return tmp_str;
-}
-
 const int chipSelect = 10;
 
 File myFile;
@@ -39,7 +34,7 @@ void setup() {
 
   // create/open file
   myFile = SD.open("data.csv", FILE_WRITE);
-  myFile.println("(aX, aY, aZ, Temp(°C), gX, gY, gZ)");
+  myFile.println("aX (g), aY (g), aZ (g), Temp (C), gX (deg/s), gY (deg/s), gZ (deg/s)");
   myFile.close();
 }
 void loop() {
@@ -56,43 +51,59 @@ void loop() {
   gyro_x = Wire.read()<<8 | Wire.read(); // reading registers: 0x43 (GYRO_XOUT_H) and 0x44 (GYRO_XOUT_L)
   gyro_y = Wire.read()<<8 | Wire.read(); // reading registers: 0x45 (GYRO_YOUT_H) and 0x46 (GYRO_YOUT_L)
   gyro_z = Wire.read()<<8 | Wire.read(); // reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
+
+  /* print RAW data to SERIAL
+  Serial.print("raw aX = "); Serial.print(accelerometer_x);
+  Serial.print(" | raw aY = "); Serial.print(accelerometer_y);
+  Serial.print(" | raw aZ = "); Serial.print(accelerometer_z);
   
-  // print out data
-  Serial.print("aX = "); Serial.print(convert_int16_to_str(accelerometer_x));
-  Serial.print(" | aY = "); Serial.print(convert_int16_to_str(accelerometer_y));
-  Serial.print(" | aZ = "); Serial.print(convert_int16_to_str(accelerometer_z));
-  // the following equation was taken from the documentation [MPU-6000/MPU-6050 Register Map and Description, p.30]
-  Serial.print(" | tmp = "); Serial.print(temperature/340.00+36.53);
-  Serial.print(" | gX = "); Serial.print(convert_int16_to_str(gyro_x));
-  Serial.print(" | gY = "); Serial.print(convert_int16_to_str(gyro_y));
-  Serial.print(" | gZ = "); Serial.print(convert_int16_to_str(gyro_z));
+  Serial.print(" | raw temp = "); Serial.print(temperature);
+
+  Serial.print(" | raw gX = "); Serial.print(gyro_x);
+  Serial.print(" | raw gY = "); Serial.print(gyro_y);
+  Serial.print(" | raw gZ = "); Serial.print(gyro_z);
   Serial.println();
+  */
 
+  // calculate accelXYZ, temp, and gyroXYZ as floats
+  float accel_x = (float)accelerometer_x/16384.0;
+  float accel_y = (float)accelerometer_y/16384.0;
+  float accel_z = (float)accelerometer_z/16384.0;
 
-  // calculate accelXYZ and gyroXYZ
-  accelerometer_x = ((accelerometer_x)/65536) * 32;
-  accelerometer_y = ((accelerometer_y)/65536) * 32;
-  accelerometer_z = ((accelerometer_z)/65536) * 32;
+  // the following equation was taken from the documentation [MPU-6000/MPU-6050 Register Map and Description, p.30]
+  float temp = ((temperature/340.00)+36.53);
 
-  gyro_x = (gyro_x)/32768 * 500;
-  gyro_y = (gyro_y)/32768 * 500;
-  gyro_z = (gyro_z)/32768 * 500;
+  float gyro_x_real = ((gyro_x)/131.0);
+  float gyro_y_real = ((gyro_y)/131.0);
+  float gyro_z_real = ((gyro_z)/131.0);
+
+  // print out data
+  Serial.print("aX = "); Serial.print(accel_x);
+  Serial.print(" | aY = "); Serial.print(accel_y);
+  Serial.print(" | aZ = "); Serial.print(accel_z);
+  
+  Serial.print(" | temp = "); Serial.print(temp);
+
+  Serial.print(" | gX = "); Serial.print(gyro_x_real);
+  Serial.print(" | gY = "); Serial.print(gyro_y_real);
+  Serial.print(" | gZ = "); Serial.print(gyro_z_real);
+  Serial.println();
   
   // print data to file
   myFile = SD.open("data.csv", FILE_WRITE);
-  myFile.print(convert_int16_to_str(accelerometer_x));
+  myFile.print(accel_x);
   myFile.print(", ");
-  myFile.print(convert_int16_to_str(accelerometer_y));
+  myFile.print(accel_y);
   myFile.print(", ");
-  myFile.print(convert_int16_to_str(accelerometer_z));
+  myFile.print(accel_z);
   myFile.print(", ");
-  myFile.print(temperature/340.00+36.53);
+  myFile.print(temp);
   myFile.print(", ");
-  myFile.print(convert_int16_to_str(gyro_x));
+  myFile.print(gyro_x_real);
   myFile.print(", ");
-  myFile.print(convert_int16_to_str(gyro_y));
+  myFile.print(gyro_y_real);
   myFile.print(", ");
-  myFile.println(convert_int16_to_str(gyro_z));
+  myFile.println(gyro_z_real);
   myFile.close();
 
   // delay
@@ -100,9 +111,9 @@ void loop() {
 }
 
 // conversion equations: 
-// acceleration(g) = (raw reading / 65,536) * 32(g) (already calibration)
-// temperature(°C) = raw reading(°C)   (already calibrated) 
-// gyroscope(°/s) = (raw reading / 32,768) * 500(°/s) (already calibration)
+// acceleration(g) = (raw reading / 16384.0)
+// temperature(°C) = raw reading(°C) / 340.00 +36.53
+// gyroscope(°/s) = (raw reading / 131.0)
 
 // units:
 // g = gravitational acceleration
