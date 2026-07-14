@@ -1,0 +1,11 @@
+WIRING GUIDE
+
+Sensor -> Board
+---------------
+
+VCC -> 5V
+GND -> GND
+SDI -> A4
+SCK -> A5
+
+Note: Wiring is listed for Arduino Uno board.
