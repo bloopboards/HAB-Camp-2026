@@ -27,7 +27,7 @@ void setup() {
   Serial.println("initialization done.");
 
    myFile = SD.open("data.csv", FILE_WRITE);
-   myFile.print("Voltage (V), Power (mW), Solar Power (mW), Intensity (W/m^2)");
+   myFile.println("Voltage (V), Power (mW), Solar Power (mW), Intensity (W/m^2)");
    myFile.close();
 
 }
