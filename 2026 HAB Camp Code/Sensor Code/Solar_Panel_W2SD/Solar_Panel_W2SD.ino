@@ -8,7 +8,7 @@ float solarpower;
 float intensity;
 
 const float area = 0.000007875; // area of sensor in m^2
-const float R = 10000;
+const float resistance = 10000; // resistor value (ohms)
 const float ConvEffToHundredth = 17; // solar panel efficiency (17%)
 
 File myFile;
@@ -36,7 +36,7 @@ void loop() {
   measureA0 = analogRead(A0);
 
   voltage = (5 * measureA0) / 1023;
-  power = (voltage * voltage) / R;
+  power = (voltage * voltage) / resistance;
   solarpower = (power * 100) / ConvEffToHundredth;
   intensity = solarpower / area;
 
