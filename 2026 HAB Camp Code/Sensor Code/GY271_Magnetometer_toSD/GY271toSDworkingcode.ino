@@ -20,10 +20,10 @@ void setup() {
   }
 Serial.println("initialization done.");
 
-Serial.println("Magnetic field X (mG), Magnetic field Y (mG), Magnetic field Z (mG), Heading (°), Magnitude (mG)");
+Serial.println("Magnetic field X (uT), Magnetic field Y (uT), Magnetic field Z (uT), Heading (°), Magnitude (uT)");
 
 myFile = SD.open("data.csv", FILE_WRITE);
-myFile.println("Magnetic field X (mG), Magnetic field Y (mG), Magnetic field Z (mG), Heading (°), Magnitude (mG)");
+myFile.println("Magnetic field X (uT), Magnetic field Y (uT), Magnetic field Z (uT), Heading (°), Magnitude (uT)");
 myFile.close();
 }
 
