@@ -178,6 +178,7 @@ void loop() {
   double results[] = {timeS, xF, yF, zF, uT, gyxF, gyyF, gyzF, gyMag};
   digitalWrite(SD_CS, LOW);   
   File sensorData = SD.open("data.csv", FILE_WRITE);
+if(sensorData){
     if(titles){
        for(int i = 0; i < columns; i++){
           if(i == (columns - 1)){
@@ -203,6 +204,11 @@ void loop() {
        }
     }
     }
+}
+  else{
+  Serial.println("SD Card Failed :(");
+  sensorData.close();
+  }
   delay(measurementGap * 1000);
   incrementTime(measurementGap * 1000);
   digitalWrite(SD_CS, HIGH);
