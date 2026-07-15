@@ -7,7 +7,7 @@ float power;
 float solarpower;
 float intensity;
 
-const float area = 0.000007875;
+const float area = 0.000007875; // area of sensor in m^2
 const float R = 10000;
 const float ConvEffToHundredth = 17; // solar panel efficiency (17%)
 
