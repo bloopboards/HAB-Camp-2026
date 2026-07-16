@@ -154,7 +154,7 @@ void setup() {
   myFile = SD.open("data.csv", FILE_WRITE);
   if (myFile) {
     Serial.print(F("Writing header to data.csv..."));
-    myFile.println(F("Internal Temp (*C), Pressure (hPa), Approx. Altitude (meters), CPM, nSv/h, uSv/h, Mag. field X (mG), Mag. field Y (mG), Mag. field Z (mG), Heading (°), Magnitude (mG), Particles > 0.3um / 0.1L air, Particles > 0.5um / 0.1L air, Particles > 1.0um / 0.1L air, Particles > 2.5um / 0.1L air, Particles > 5.0um / 0.1L air, Particles > 10 um / 0.1L air, CO2 (ppm), SCD30/External Temp (C), Humidity (%)"));
+    myFile.println(F("Internal Temp (*C), Pressure (hPa), Approx. Altitude (meters), CPM, nSv/h, uSv/h, Mag. field X (mG), Mag. field Y (mG), Mag. field Z (mG), Heading (°), Magnitude (mG), Particles > 0.3um / 0.1L air, Particles > 0.5um / 0.1L air, Particles > 1.0um / 0.1L air, Particles > 2.5um / 0.1L air, Particles > 5.0um / 0.1L air, Particles > 10 um / 0.1L air, CO2 (ppm), External/SCD30 Temp (C), Humidity (%)"));
     myFile.close();
     Serial.println(F("Done!"));
   } else {
