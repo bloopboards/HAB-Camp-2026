@@ -76,6 +76,7 @@ const int CS_PIN = 10;
 // Sets starting values from the SCD30
 float co2 = 0;
 float humidity = 0;
+float outsidetemp = 0;
 SCD30 airSensor;
 
 File myFile;
@@ -85,17 +86,24 @@ DFRobot_Geiger geiger(detect_pin);
 Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
 
 void setup() {
-  //Set serial to 115200
+  // Set serial to 115200
   Serial.begin(115200);
 
-  //Output for CS Pin for Micro SD card
+  // Output for CS Pin for Micro SD card
   pinMode(10, OUTPUT);
 
-  //Setup the compass 
+  // Setup the compass 
   Wire.begin();
 
   compass.init();
   compass.setMode(0x01,0x00,0x00,0x00);
+
+  // Check air sensor
+  if (airSensor.begin() == false) {
+    Serial.println("Air sensor not detected. Please check wiring. Freezing...");
+    while (1)
+      ;
+  }
 
   while (!Serial) { ; }
   Serial.println(F("Initializing SD card..."));
@@ -146,7 +154,7 @@ void setup() {
   myFile = SD.open("data.csv", FILE_WRITE);
   if (myFile) {
     Serial.print(F("Writing header to data.csv..."));
-    myFile.println(F("Temperature (*C), Pressure (hPa), Approx. Altitude (meters), CPM, nSv/h, uSv/h, Mag. field X (mG), Mag. field Y (mG), Mag. field Z (mG), Heading (°), Magnitude (mG), Particles > 0.3um / 0.1L air, Particles > 0.5um / 0.1L air, Particles > 1.0um / 0.1L air, Particles > 2.5um / 0.1L air, Particles > 5.0um / 0.1L air, Particles > 10 um / 0.1L air, CO2 (ppm), SCD30/External Temp (C), Humidity (%)"));
+    myFile.println(F("Internal Temp (*C), Pressure (hPa), Approx. Altitude (meters), CPM, nSv/h, uSv/h, Mag. field X (mG), Mag. field Y (mG), Mag. field Z (mG), Heading (°), Magnitude (mG), Particles > 0.3um / 0.1L air, Particles > 0.5um / 0.1L air, Particles > 1.0um / 0.1L air, Particles > 2.5um / 0.1L air, Particles > 5.0um / 0.1L air, Particles > 10 um / 0.1L air, CO2 (ppm), SCD30/External Temp (C), Humidity (%)"));
     myFile.close();
     Serial.println(F("Done!"));
   } else {
@@ -198,12 +206,12 @@ void loop() {
   // SCD30 only gets data every two seconds, so this makes sure there is data to print
   // If no data is available, it will print whatever the last data available was
   if (airSensor.dataAvailable()) {
-    float co2 = airSensor.getCO2();
-    float humidity = airSensor.getHumidity();
+    co2 = airSensor.getCO2();
+    outsidetemp = airSensor.getTemperature();
+    humidity = airSensor.getHumidity();
   }
   else {
   }
-
 
   // Print values cleanly to the Serial Monitor
   Serial.print(F("Data Line -> "));
@@ -235,6 +243,7 @@ void loop() {
   
   // SCD30 (CO2 + Humidity)
   Serial.print(co2); Serial.print(F(", "));
+  Serial.print(outsidetemp); Serial.print(F(", "));
   Serial.print(humidity);
 
   Serial.println();
@@ -267,14 +276,15 @@ void loop() {
     myFile.print(data.particles_50um); myFile.print(",");
     myFile.print(data.particles_100um); myFile.print(",");
 
-    // SCD30 (CO2 + Humidity)
+    // SCD30 (CO2 + External temperature + Humidity)
     myFile.print(co2);      myFile.print(",");
+    myFile.print(outsidetemp); myFile.print(",");
     myFile.print(humidity);
     myFile.println();
     
     // use println for the last item to create a new row
 
-    myFile.close();         // Automatically flushes and saves data safely
+    myFile.close();     // Automatically flushes and saves data safely
   } else {
     Serial.println(F("Error opening data.csv for loop writing"));
   }
