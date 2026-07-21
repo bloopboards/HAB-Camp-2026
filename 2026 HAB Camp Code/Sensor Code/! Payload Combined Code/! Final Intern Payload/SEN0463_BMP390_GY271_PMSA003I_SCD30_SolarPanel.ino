@@ -94,6 +94,10 @@ const float area = 0.0039875; // area of sensor in m^2
 const float resistance = 10000; // resistor value (ohms)
 const float ConvEffToHundredth = 17; // solar panel efficiency (17%)
 
+// This is to set up the heating pad
+int heaterPin = 4;
+int heaterTemp = 5;
+
 File myFile;
 QMC5883LCompass compass;
 Adafruit_BMP3XX bmp;
@@ -107,8 +111,9 @@ void setup() {
   // Output for CS Pin for Micro SD card
   pinMode(10, OUTPUT);
 
-  // Setup the compass 
+  // Setup the compass and initially start heater off
   Wire.begin();
+  digitalWrite(heaterPin, LOW);
 
   compass.init();
   compass.setMode(0x01,0x00,0x00,0x00);
@@ -256,10 +261,20 @@ void loop() {
   Serial.print(data.particles_50um); Serial.print(F(", "));
   Serial.print(data.particles_100um); Serial.print(F(", "));
   
+
   // SCD30 (CO2 + Humidity)
   Serial.print(co2); Serial.print(F(", "));
   Serial.print(outsidetemp); Serial.print(F(", "));
   Serial.print(humidity); Serial.print(F(", "));
+
+  //Start Heater
+  if (outsidetemp > heaterTemp) {
+    digitalWrite(heaterPin, LOW);
+    delay(3000); }
+    else{
+      digitalWrite(heaterPin, HIGH);
+      delay(3000); }
+  }
   
   // Solar Panel (V, mW, mW, W/m^2)
   measureA0 = analogRead(A0);
