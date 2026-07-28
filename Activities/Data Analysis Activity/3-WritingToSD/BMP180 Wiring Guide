@@ -1,0 +1,8 @@
+BMP180 WIRING GUIDE
+
+Sensor -> Uno / Mega
+---------------
+VIN -> 5V / 5V
+GND -> GND / GND
+SCL -> SCL / 21
+SDA -> SDA / 20
