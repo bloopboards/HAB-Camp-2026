@@ -27,6 +27,23 @@ COPI >> COPI
 SCK  >> SCK
 CS   >> [selected pin]
 
+PINOUTS
+For Arduino Uno:
+CS -> pin of choosing (must change number in code)
+D1 -> 11
+D0 -> 12
+CLK -> 13
+GND -> GND
+5V -> 5V
+
+For Arduino Mega:
+CS -> pin of choosing (must change number in code)
+D1 -> 51
+D0 -> 50
+CLK -> 52
+GND -> GND
+5V -> 5V
+
 To change the CS pin in the example code change the value of the CS_PIN variable.
 
 But how do you find these pins on your board? They are usually not labeled, so you will need to consult your pinout diagram. The RedBoard has the exact same pins as the Arduino UNO.
