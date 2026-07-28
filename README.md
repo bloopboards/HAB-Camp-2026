@@ -6,4 +6,4 @@ Summer interns usually have a month long preparation phase, where we design expe
 Then, we host a 8-day camp over 2 weeks, launching multiple payloads into the stratosphere and collecting data to present at UW's research synopsium. 
 
 Starting summer of 2026, this is where we share what code we've adapted, both by intern and camper.
-Old code can be found in the 2025 HAB Folder.
+Old code can be found in the 2025 HAB Folder. Any Camper who wants to upload code will need to open a request and ask a camp leader to approve it.
