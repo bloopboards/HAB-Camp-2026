@@ -2,7 +2,7 @@ SD Card Reader Wiring Guide
 
 Sensor -> Board
 
-Arduino Uno
+Arduino Uno / Sparkfun RedBoard
 CS -> 10 (or any number, you just have to change the number in the code)
 D1 -> 11
 D0 -> 12
