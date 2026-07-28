@@ -28,7 +28,7 @@ SCK  >> SCK
 CS   >> [selected pin]
 
 PINOUTS
-For Arduino Uno:
+For Arduino Uno / Sparkfun RedBoard:
 CS -> pin of choosing (must change number in code)
 D1 -> 11
 D0 -> 12
