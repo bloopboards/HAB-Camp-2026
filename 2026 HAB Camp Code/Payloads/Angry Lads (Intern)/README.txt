@@ -1,0 +1,1 @@
+BMP390, SEN0463 Geiger Counter, Solar Panel, GY271 Magnetometer, CO2, PMSA0043I, DS18B20 Temperature Probe

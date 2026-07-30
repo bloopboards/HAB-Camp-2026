@@ -1,0 +1,1 @@
+BMP390, UV Sensor, Magnetometer, Camera
