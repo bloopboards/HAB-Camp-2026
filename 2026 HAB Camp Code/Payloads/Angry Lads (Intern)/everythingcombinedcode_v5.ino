@@ -217,9 +217,6 @@ void loop() {
   float insidetemp     = bmp.temperature;
   float pressure = bmp.pressure / 100.0;
   float altitude = bmp.readAltitude(SEALEVELPRESSURE_HPA);
-
-  //compensates for pressure in SCD30 readings
-  airSensor.setAmbientPressure(pressure);
   
   // SEN0463
   float cpm   = geiger.getCPM();
