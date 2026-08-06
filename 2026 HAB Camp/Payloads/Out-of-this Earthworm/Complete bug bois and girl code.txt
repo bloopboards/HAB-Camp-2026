@@ -1,0 +1,139 @@
+/*
+Libraries: 
+Adafruit BMP3XX Library - install all
+SD by Arduino, SparkFun
+*/
+
+/***************************************************************************
+  This is a library for the BMP3XX temperature & pressure sensor
+
+  Designed specifically to work with the Adafruit BMP388 Breakout
+  ----> http://www.adafruit.com/products/3966
+
+  These sensors use I2C or SPI to communicate, 2 or 4 pins are required
+  to interface.
+
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing products
+  from Adafruit!
+
+  Written by Limor Fried & Kevin Townsend for Adafruit Industries.
+  BSD license, all text above must be included in any redistribution
+ ***************************************************************************/
+
+#include <SD.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_BMP3XX.h"
+
+int sensorPin = 2;   // PIR sensor signal connected to pin 2
+int sensorState = LOW; // to track last state
+unsigned long previousMillis = 0;
+unsigned long seconds = 0;
+
+File myFile;
+
+const int chipSelect = 10;
+
+#define SEALEVELPRESSURE_HPA (1013.25)
+
+Adafruit_BMP3XX bmp;
+
+int CS_PIN = 10;
+
+void setup() {
+  Serial.begin(115200);
+    pinMode(sensorPin, INPUT);
+  while (!Serial);
+  Serial.print("Initializing SD card...");
+  pinMode(CS_PIN, OUTPUT);
+   if (!SD.begin(CS_PIN)) {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    while (1);
+  }
+  Serial.println("card initialized.");
+  Serial.println("Adafruit BMP388 / BMP390 test");
+  
+
+  if (!bmp.begin_I2C()) {   // hardware I2C mode, can pass in address & alt Wire
+  //if (! bmp.begin_SPI(BMP_CS)) {  // hardware SPI mode  
+  //if (! bmp.begin_SPI(BMP_CS, BMP_SCK, BMP_MISO, BMP_MOSI)) {  // software SPI mode
+    Serial.println("Could not find a valid BMP3 sensor, check wiring!");
+    while (1);
+  }
+
+  // Set up oversampling and filter initialization
+  bmp.setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
+  bmp.setPressureOversampling(BMP3_OVERSAMPLING_4X);
+  bmp.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
+  bmp.setOutputDataRate(BMP3_ODR_50_HZ);
+
+  myFile = SD.open("data.csv", FILE_WRITE);
+  myFile.println("Temperature (*C), Pressure (hPa), Approx. Altitude (meters), Time(s), Motion");
+  myFile.close();
+}
+
+void loop() {
+
+  myFile = SD.open("data.csv", FILE_WRITE);
+  int sensorValue = digitalRead(sensorPin);
+  if (! bmp.performReading()) {
+    Serial.println("Failed to perform reading :(");
+    return;
+  }
+  Serial.print(bmp.temperature);
+  Serial.print(", ");
+  
+  myFile.print(bmp.temperature);
+  myFile.print(", ");
+
+  Serial.print(bmp.pressure / 100.0);
+  Serial.print(", ");
+
+  myFile.print(bmp.pressure / 100.0);
+  myFile.print(", ");
+
+  Serial.print(bmp.readAltitude(SEALEVELPRESSURE_HPA));
+  Serial.print(", ");
+
+  myFile.print(bmp.readAltitude(SEALEVELPRESSURE_HPA));
+  myFile.print(", ");
+
+  myFile.close();
+
+  if (sensorValue == HIGH) {
+    
+    if (sensorState == LOW) {
+      Serial.print("Motion detected!");
+      Serial.print(", ");
+      sensorState = HIGH;
+    }
+  } else {
+    
+    if (sensorState == HIGH) {
+      Serial.print("Motion stopped!");
+      Serial.print(", ");
+      sensorState = LOW;
+    }
+  }
+  if (millis() - previousMillis >= 1000) {
+    previousMillis = millis();
+    seconds++;
+    Serial.println(seconds);
+    
+  }
+   myFile = SD.open("data.csv", FILE_WRITE);
+   if (myFile) {
+      myFile.print(seconds);  myFile.print(",");
+      myFile.println(sensorState);
+    } else {
+         Serial.println("error opening data.csv");
+         while(1);
+        }
+  myFile.close();
+  delay(1000);
+}
+// NOTE1: 1 is motion detected 0 is no motion
+// NOTE2: Adafruit BMP3XX AND SD by Arduino, SparkFun are both libraries needed
