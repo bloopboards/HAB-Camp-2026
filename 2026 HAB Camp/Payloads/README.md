@@ -2,5 +2,6 @@ This contains individual teams payloads. Each in the form of a folder, named by 
 
 Each can contain, but not limited to: 
 - Final/combined code that connects all of their experiments
+- Data!
 - Diagram work of the payload
 - Pin out for their finalized electronics
